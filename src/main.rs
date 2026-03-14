@@ -1,4 +1,5 @@
 mod artist;
+mod utils;
 
 use clap::Parser;
 

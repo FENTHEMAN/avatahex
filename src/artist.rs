@@ -25,13 +25,13 @@ pub enum Orientation {
 
 #[derive(Debug)]
 pub struct Artist {
-    x: isize,
-    y: isize,
-    heading: Orientation,
+    pub x: isize,
+    pub y: isize,
+    pub heading: Orientation,
 }
 
 impl Artist {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Artist {
             x: HOME_X,
             y: HOME_Y,
@@ -39,12 +39,12 @@ impl Artist {
         }
     }
 
-    fn home(&mut self) {
+    pub fn home(&mut self) {
         self.x = HOME_X;
         self.y = HOME_Y;
     }
 
-    fn forward(&mut self, distance: isize) {
+    pub fn forward(&mut self, distance: isize) {
         match self.heading {
             Orientation::North => self.y += distance,
             Orientation::South => self.y -= distance,
@@ -53,7 +53,7 @@ impl Artist {
         }
     }
 
-    fn turn_right(&mut self) {
+    pub fn turn_right(&mut self) {
         self.heading = match self.heading {
             Orientation::North => Orientation::East,
             Orientation::South => Orientation::West,
@@ -62,7 +62,7 @@ impl Artist {
         }
     }
 
-    fn turn_left(&mut self) {
+    pub fn turn_left(&mut self) {
         self.heading = match self.heading {
             Orientation::North => Orientation::West,
             Orientation::South => Orientation::East,
@@ -71,7 +71,7 @@ impl Artist {
         }
     }
 
-    fn wrap(&mut self) {
+    pub fn wrap(&mut self) {
         if self.x < 0 {
             self.x = HOME_X;
             self.heading = Orientation::West;
