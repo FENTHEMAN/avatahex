@@ -1,3 +1,5 @@
+mod artist;
+
 use clap::Parser;
 
 #[derive(Parser)]
