@@ -1,13 +1,10 @@
 use svg::{Document, node::element::{Path, Rectangle, path::{Command, Data, Position}}};
-
 use crate::artist::{Artist, HEIGHT, HOME_X, HOME_Y, Operation, STROKE_WIDTH, WIDTH};
-
+use rayon::prelude::*;
 
 pub fn parse(input: &str) -> Vec<Operation> {
-    let bytes = input.bytes();
-    let mut steps = Vec::<Operation>::with_capacity(bytes.len());
-    for byte in bytes {
-        let step = match byte {
+    input.as_bytes().par_iter().map(|byte| {
+        match byte {
             b'0' => Operation::Home,
             b'1'..=b'9' => {
                 let distance = (byte - 0x30) as isize;
@@ -15,11 +12,9 @@ pub fn parse(input: &str) -> Vec<Operation> {
             }
             b'a' | b'b' | b'c' => Operation::TurnLeft,
             b'd' | b'e' | b'f' => Operation::TurnRight,
-            _ => Operation::Noop(byte),
-        };
-        steps.push(step);
-    }
-    steps
+            _ => Operation::Noop(*byte),
+        }
+    }).collect()
 }
 
 pub fn convert(operations: &Vec<Operation>) -> Vec<Command> {
