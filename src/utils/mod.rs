@@ -1,6 +1,9 @@
+mod byte;
+mod queue_optimisation;
+
 use std::iter::once;
 
-use crate::artist::{Artist, HEIGHT, HOME_X, HOME_Y, Operation, STROKE_WIDTH, WIDTH};
+use crate::{artist::{Artist, HEIGHT, HOME_X, HOME_Y, Operation, STROKE_WIDTH, WIDTH}, utils::byte::parse_byte};
 use rayon::prelude::*;
 use svg::{
     Document,
@@ -10,22 +13,22 @@ use svg::{
     },
 };
 
-pub fn parse(input: &str) -> Vec<Operation> {
+pub fn rayon_parse(input: &str) -> Vec<Operation> {
     input
         .as_bytes()
         .par_iter()
-        .map(|byte| match byte {
-            b'0' => Operation::Home,
-            b'1'..=b'9' => {
-                let distance = (byte - 0x30) as isize;
-                Operation::Forward(distance * (HEIGHT / 10))
-            }
-            b'a' | b'b' | b'c' => Operation::TurnLeft,
-            b'd' | b'e' | b'f' => Operation::TurnRight,
-            _ => Operation::Noop(*byte),
-        })
+        .map(|byte| parse_byte(*byte))
         .collect()
 }
+
+pub fn parse(input: &str) -> Vec<Operation> {
+    input
+        .bytes()
+        .map(parse_byte)
+        .collect()
+}
+
+pub use queue_optimisation::queue_parse;
 
 pub fn convert(operations: &Vec<Operation>) -> Vec<Command> {
     let mut artist = Artist::new();
